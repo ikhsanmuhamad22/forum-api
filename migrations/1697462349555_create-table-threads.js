@@ -1,7 +1,7 @@
 exports.up = (pgm) => {
   pgm.createTable('threads', {
     id: {
-      type: 'VARCHAR(50)',
+      type: 'TEXT',
       primaryKey: true,
     },
     owner: {
@@ -23,7 +23,7 @@ exports.up = (pgm) => {
   });
   pgm.createConstraint('threads', 'fk_threads.user_id_users.id', {
     foreignKeys: {
-      columns: 'user_id',
+      columns: 'owner',
       references: 'users(id)',
       onDelete: 'CASCADE',
     },

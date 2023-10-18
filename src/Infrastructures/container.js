@@ -171,7 +171,7 @@ container.register([
   },
   {
     key: AddThreadUseCase.name,
-    Class: AddUserUseCase,
+    Class: AddThreadUseCase,
     parameter: {
       injectType: 'destructuring',
       dependencies: [
