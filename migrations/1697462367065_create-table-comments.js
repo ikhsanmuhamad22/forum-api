@@ -4,11 +4,11 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       primaryKey: true,
     },
-    user_id: {
+    owner: {
       type: 'VARCHAR(50)',
       notNull: true,
     },
-    thread_id: {
+    threadId: {
       type: 'VARCHAR(50)',
       notNull: true,
     },
@@ -17,20 +17,20 @@ exports.up = (pgm) => {
       notNull: true,
     },
     date: {
-      type: 'VARCHAR(50)',
+      type: 'TEXT',
       notNull: true,
     },
   });
-  pgm.createConstraint('comments', 'fk_comments.user_id_users.id', {
+  pgm.createConstraint('comments', 'fk_comments.owner_users.id', {
     foreignKeys: {
-      columns: 'user_id',
+      columns: 'owner',
       references: 'users(id)',
       onDelete: 'CASCADE',
     },
   });
-  pgm.createConstraint('comments', 'fk_comments.thread_id_threads.id', {
+  pgm.createConstraint('comments', 'fk_comments.threadId_threads.id', {
     foreignKeys: {
-      columns: 'thread_id',
+      columns: 'threadId',
       references: 'threads(id)',
       onDelete: 'CASCADE',
     },

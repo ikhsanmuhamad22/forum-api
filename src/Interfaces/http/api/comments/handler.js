@@ -10,13 +10,13 @@ class CommentHandler {
   async postCommentHandler(request, h) {
     const { id: credentialId } = request.auth.credentials;
     const addCommentUseCase = this._container.getInstance(AddCommentUseCase.name);
-    const NewComment = await addCommentUseCase
+    const addedComment = await addCommentUseCase
       .execute(request.payload, request.params, credentialId);
 
     const response = h.response({
       status: 'success',
       data: {
-        NewComment,
+        addedComment,
       },
     });
     response.code(201);
