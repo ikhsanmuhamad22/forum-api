@@ -20,6 +20,10 @@ exports.up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
+    isDelete: {
+      type: 'BOOLEAN',
+      notNull: true,
+    },
   });
   pgm.createConstraint('comments', 'fk_comments.owner_users.id', {
     foreignKeys: {

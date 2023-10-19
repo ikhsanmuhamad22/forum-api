@@ -11,11 +11,14 @@ class AddedThread {
 
   _verifyPayload({ id, title, owner }) {
     if (!id || !title || !owner) {
-      throw new Error('REGISTERED_USER.NOT_CONTAIN_NEEDED_PROPERTY');
+      throw new Error('ADDED_THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
     if (typeof id !== 'string' || typeof title !== 'string' || typeof owner !== 'string') {
-      throw new Error('REGISTERED_USER.NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('ADDED_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    }
+    if (title.length > 50) {
+      throw new Error('ADDED_THREAD.TITLE_LIMIT_CHAR');
     }
   }
 }
