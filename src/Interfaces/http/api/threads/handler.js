@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 const AddThreadUseCase = require('../../../../Applications/use_case/AddThreadUseCase');
 const GetThreadUseCase = require('../../../../Applications/use_case/getThreadUseCase');
 
