@@ -11,11 +11,11 @@ class NewComment {
 
   _verifyPayload({ content }, { threadId }) {
     if (!content || !threadId) {
-      throw new Error('REGISTER_USER.NOT_CONTAIN_NEEDED_PROPERTY');
+      throw new Error('NEW_COMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
     if (typeof content !== 'string' || typeof threadId !== 'string') {
-      throw new Error('REGISTER_USER.NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('NEW_COMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 }
