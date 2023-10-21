@@ -21,7 +21,7 @@ exports.up = (pgm) => {
       notNull: true,
     },
   });
-  pgm.createConstraint('threads', 'fk_threads.user_id_users.id', {
+  pgm.createConstraint('threads', 'fk_threads.owner_users.id', {
     foreignKeys: {
       columns: 'owner',
       references: 'users(id)',

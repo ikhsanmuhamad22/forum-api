@@ -12,11 +12,11 @@ class DeleteCommentUseCase {
 
   _verifyCredentialId(credentialId) {
     if (!credentialId) {
-      throw new Error('NEW_THREAD_USE_CASE.NOT_CONTAIN_CREDENTIAL_ID');
+      throw new Error('DELETE_THREAD_USE_CASE.NOT_CONTAIN_CREDENTIAL_ID');
     }
 
     if (typeof credentialId !== 'string') {
-      throw new Error('NEW_THREAD_USE_CASE.CREDENTIAL_ID_NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('DELETE_THREAD_USE_CASE.CREDENTIAL_ID_NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 }

@@ -1,10 +1,29 @@
 const NewComment = require('../../../Domains/comments/entities/NewComment');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
-const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const AddCommentUseCase = require('../AddCommentUseCase');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 
 describe('AddCommentUseCase', () => {
+  it('should throw error if use case paramater not countain credentialId', async () => {
+    // Arrange
+    const newComment = { content: 'pagi semuaa' };
+    const paramsComment = { threadId: 'thread-123' };
+    const addCommentUseCase = new AddCommentUseCase({});
+
+    // Action & Assert
+    await expect(addCommentUseCase.execute(newComment, paramsComment)).rejects.toThrowError('NEW_THREAD_USE_CASE.NOT_CONTAIN_CREDENTIAL_ID');
+  });
+
+  it('should throw error if credentialId not string', async () => {
+    // Arrange
+    const newComment = { content: 'pagi semuaa' };
+    const paramsComment = { threadId: true };
+    const credentialId = 1234;
+    const addThreadUseCase = new AddCommentUseCase({});
+
+    // Action & Assert
+    await expect(addThreadUseCase.execute(newComment, paramsComment, credentialId)).rejects.toThrowError('NEW_THREAD_USE_CASE.CREDENTIAL_ID_NOT_MEET_DATA_TYPE_SPECIFICATION');
+  });
   /**
    * Menguji apakah use case mampu mengoskestrasikan langkah demi langkah dengan benar.
    */
@@ -19,7 +38,7 @@ describe('AddCommentUseCase', () => {
 
     const credentialId = 'user-123';
 
-    const mockNewThread = new NewComment(useCasePayload, useCaseParams);
+    const mockNewComment = new NewComment(useCasePayload, useCaseParams);
 
     /** creating dependency of use case */
     const mockThreadRepository = new ThreadRepository();
@@ -29,12 +48,12 @@ describe('AddCommentUseCase', () => {
     mockThreadRepository.verifyAvailableThread = jest.fn()
       .mockImplementation(() => Promise.resolve(useCaseParams.threadId));
     mockCommentRepository.addComment = jest.fn()
-      .mockImplementation(() => Promise.resolve(mockNewThread, credentialId));
+      .mockImplementation(() => Promise.resolve(mockNewComment, credentialId));
 
     /** creating use case instance */
     const addCommentUseCase = new AddCommentUseCase({
-      ThreadRepository: mockThreadRepository,
-      CommentRepository: mockCommentRepository,
+      threadRepository: mockThreadRepository,
+      commentRepository: mockCommentRepository,
     });
 
     // Action
@@ -42,15 +61,17 @@ describe('AddCommentUseCase', () => {
       .execute(useCasePayload, useCaseParams, credentialId);
 
     // Assert
-    expect(addedComment).toStrictEqual(new AddedComment({
-      id: useCaseParams.threadId,
-      content: useCasePayload.title,
-      owner: credentialId,
+    expect(addedComment).toStrictEqual(new NewComment({
+      content: useCasePayload.content,
+    }, {
+      threadId: useCaseParams.threadId,
     }));
 
-    expect(mockThreadRepository.addThread).toBeCalledWith(new NewComment({
-      title: useCasePayload.title,
-      body: useCasePayload.body,
-    }, credentialId));
+    expect(mockThreadRepository.verifyAvailableThread).toBeCalledWith(useCaseParams.threadId);
+    expect(mockCommentRepository.addComment).toBeCalledWith(new NewComment({
+      content: useCasePayload.content,
+    }, {
+      threadId: useCaseParams.threadId,
+    }), credentialId);
   });
 });
