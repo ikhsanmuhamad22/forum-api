@@ -5,8 +5,8 @@ class DeleteCommentUseCase {
 
   async execute(id, credentialId) {
     this._verifyCredentialId(credentialId);
-    await this._commentRepository.verifyAvailableComment(id);
     await this._commentRepository.verifyCommentOwner(id, credentialId);
+    await this._commentRepository.verifyAvailableComment(id);
     return this._commentRepository.deleteCommentById(id);
   }
 

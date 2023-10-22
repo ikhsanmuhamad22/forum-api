@@ -14,13 +14,12 @@ class CommentRepositoryPostgres extends CommentRepository {
     const { content, threadId } = newComment;
     const id = `comment-${this._idGenerator()}`;
     const isDelete = false;
-    const createdAt = new Date();
+    const date = new Date();
 
     const query = {
-      text: 'INSERT INTO comments VALUES($1, $2, $3, $4, $5, $6) RETURNING id, content, owner',
-      values: [id, owner, threadId, content, createdAt, isDelete],
+      text: 'INSERT INTO comments (id, owner, "threadId", content, date, "isDelete") VALUES($1, $2, $3, $4, $5, $6) RETURNING id, content, owner',
+      values: [id, owner, threadId, content, date, isDelete],
     };
-
     const result = await this._pool.query(query);
 
     return new AddedComment({ ...result.rows[0] });
@@ -37,18 +36,13 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async verifyCommentOwner(id, credentialId) {
     const query = {
-      text: 'SELECT * FROM comments WHERE id = $1',
-      values: [id],
+      text: 'SELECT * FROM comments WHERE id = $1 AND comments.owner = $2',
+      values: [id, credentialId],
     };
 
-    const { rows, rowCount } = await this._pool.query(query);
+    const result = await this._pool.query(query);
 
-    if (!rowCount) {
-      throw new NotFoundError('comment tidak ditemukan');
-    }
-
-    const { owner } = rows[0];
-    if (rowCount && owner !== credentialId) {
+    if (!result.rowCount) {
       throw new AuthorizationError('Anda tidak berhak mengakses resource ini!');
     }
   }
