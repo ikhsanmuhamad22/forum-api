@@ -2,6 +2,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "jest.autoRun": {},
+  // "jest.autoRun": {},
   "eslint.validate": ["javascript"]
 }

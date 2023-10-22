@@ -1,26 +1,91 @@
 const pool = require('../../database/postgres/pool');
-const container = require('../../container');
+const ThreadsTableTestHandler = require('../../../../tests/ThreadsTableTestHelper');
 const createServer = require('../createServer');
-const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
+const container = require('../../container');
+const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 
-describe('/users endpoint', () => {
+describe('/threads endpoint', () => {
+  // create variable global
+  let accessTokenUserA = '';
+  let accessTokenUserB = '';
+  let threadId = '';
+
+  beforeAll(async () => {
+    /** create user and user login */
+    const server = await createServer(container);
+
+    // User A
+    const createUserALoginPayload = {
+      username: 'userA',
+      password: 'secret',
+    };
+
+    // add user A
+    await server.inject({
+      method: 'POST',
+      url: '/users',
+      payload: {
+        username: 'userA',
+        password: 'secret',
+        fullname: 'user A',
+      },
+    });
+    // user A login
+    const responseUserALogin = await server.inject({
+      method: 'POST',
+      url: '/authentications',
+      payload: createUserALoginPayload,
+    });
+
+    const responseJsonUserALogin = JSON.parse(responseUserALogin.payload);
+    const { accessToken: resultTokenUserA } = responseJsonUserALogin.data;
+    accessTokenUserA = resultTokenUserA;
+
+    // User B
+    const createUserBLoginPayload = {
+      username: 'userA',
+      password: 'secret',
+    };
+
+    // add user B
+    await server.inject({
+      method: 'POST',
+      url: '/users',
+      payload: {
+        username: 'userB',
+        password: 'secret',
+        fullname: 'user B',
+      },
+    });
+
+    // user B login
+    const responseUserBLogin = await server.inject({
+      method: 'POST',
+      url: '/authentications',
+      payload: createUserBLoginPayload,
+    });
+
+    const responseJsonUserBLogin = JSON.parse(responseUserBLogin.payload);
+    const { accessToken: resultTokenUserB } = responseJsonUserBLogin.data;
+    accessTokenUserB = resultTokenUserB;
+  });
+
+  afterAll(async () => {
+    await ThreadsTableTestHandler.cleanTable();
+    await UsersTableTestHelper.cleanTable();
+  });
+
   afterAll(async () => {
     await pool.end();
   });
 
-  afterEach(async () => {
-    await ThreadsTableTestHelper.cleanTable();
-  });
-
-  describe('when POST /users', () => {
-    it('should response 201 and persisted user', async () => {
+  describe('when POST /threads endpoint', () => {
+    it('should response 401 when reqeust payload not authentication', async () => {
       // Arrange
       const requestPayload = {
-        username: 'dicoding',
-        password: 'secret',
-        fullname: 'Dicoding Indonesia',
+        title: 'ini title',
+        body: 'ini body',
       };
-      // eslint-disable-next-line no-undef
       const server = await createServer(container);
 
       // Action
@@ -32,124 +97,143 @@ describe('/users endpoint', () => {
 
       // Assert
       const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(401);
+      expect(responseJson.message).toEqual('Missing authentication');
+    });
+
+    it('should response 400 when request payload not countain needed property', async () => {
+      // Arrange
+      const requestBadPayload = {
+        title: 'ini title',
+      };
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: '/threads',
+        payload: requestBadPayload,
+        headers: {
+          Authorization: `Bearer ${accessTokenUserA}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(400);
+      expect(responseJson).toHaveProperty('status');
+      expect(responseJson).toHaveProperty('message');
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual('tidak dapat membuat thread baru karena properti yang dibutuhkan tidak ada');
+    });
+
+    /** POST THREAD VALID PAYLOAD AND AUTHENTICATION */
+    it('should response 201 and persisted thread', async () => {
+      // Arrange
+      const requestPayload = {
+        title: 'ini title',
+        body: 'ini body',
+      };
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: '/threads',
+        payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessTokenUserA}`,
+        },
+      });
+
+      // set Variable threadId
+      const responseJson = JSON.parse(response.payload);
+      threadId = responseJson.data.addedThread.id;
+
+      const thread = await ThreadsTableTestHandler.findThreadById(threadId);
+
+      // Assert
       expect(response.statusCode).toEqual(201);
+      expect(thread).toHaveLength(1);
       expect(responseJson.status).toEqual('success');
-      expect(responseJson.data.addedUser).toBeDefined();
+      expect(responseJson.data).toHaveProperty('addedThread');
+      expect(responseJson.data.addedThread).toBeDefined();
+      expect(responseJson.data.addedThread).toHaveProperty('id');
+      expect(responseJson.data.addedThread).toHaveProperty('title');
+      expect(responseJson.data.addedThread).toHaveProperty('owner');
     });
 
-    it('should response 400 when request payload not contain needed property', async () => {
+    it('should response 400 when title more than 50 character', async () => {
       // Arrange
       const requestPayload = {
-        fullname: 'Dicoding Indonesia',
-        password: 'secret',
+        title: 'fake title fake titikele kaaklhfa akhahjhg kha kahgkahg lhgjkfshhgfdhghfjhgfffgg',
+        body: 'body',
       };
       const server = await createServer(container);
 
       // Action
       const response = await server.inject({
         method: 'POST',
-        url: '/users',
+        url: '/threads',
         payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessTokenUserA}`,
+        },
       });
 
       // Assert
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).toEqual('tidak dapat membuat user baru karena properti yang dibutuhkan tidak ada');
+      expect(responseJson.message).toEqual('tidak dapat membuat thread baru karena karena karakter title melebihi batas limit');
     });
 
-    it('should response 400 when request payload not meet data type specification', async () => {
+    it('should response 400 when request payload not meet data type spesification', async () => {
       // Arrange
       const requestPayload = {
-        username: 'dicoding',
-        password: 'secret',
-        fullname: ['Dicoding Indonesia'],
+        title: true,
+        body: 12345,
       };
       const server = await createServer(container);
 
       // Action
       const response = await server.inject({
         method: 'POST',
-        url: '/users',
+        url: '/threads',
         payload: requestPayload,
+        headers: {
+          Authorization: `Bearer ${accessTokenUserA}`,
+        },
       });
 
       // Assert
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).toEqual('tidak dapat membuat user baru karena tipe data tidak sesuai');
+      expect(responseJson.message).toEqual('tidak dapat membuat thread baru karena karena tipe data tidak sesuai');
     });
+  });
 
-    it('should response 400 when username more than 50 character', async () => {
+  /** GET THREAD ENDPOINT */
+  describe('when GET /threads/{threadId}', () => {
+    it('should response 200 and persisted thread', async () => {
       // Arrange
-      const requestPayload = {
-        username: 'dicodingindonesiadicodingindonesiadicodingindonesiadicoding',
-        password: 'secret',
-        fullname: 'Dicoding Indonesia',
-      };
       const server = await createServer(container);
 
       // Action
       const response = await server.inject({
-        method: 'POST',
-        url: '/users',
-        payload: requestPayload,
+        method: 'GET',
+        url: `/threads/${threadId}`,
       });
+      const thread = await ThreadsTableTestHandler.findThreadById(threadId);
 
       // Assert
       const responseJson = JSON.parse(response.payload);
-      expect(response.statusCode).toEqual(400);
-      expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).toEqual('tidak dapat membuat user baru karena karakter username melebihi batas limit');
-    });
-
-    it('should response 400 when username contain restricted character', async () => {
-      // Arrange
-      const requestPayload = {
-        username: 'dicoding indonesia',
-        password: 'secret',
-        fullname: 'Dicoding Indonesia',
-      };
-      const server = await createServer(container);
-
-      // Action
-      const response = await server.inject({
-        method: 'POST',
-        url: '/users',
-        payload: requestPayload,
-      });
-
-      // Assert
-      const responseJson = JSON.parse(response.payload);
-      expect(response.statusCode).toEqual(400);
-      expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).toEqual('tidak dapat membuat user baru karena username mengandung karakter terlarang');
-    });
-
-    it('should response 400 when username unavailable', async () => {
-      // Arrange
-      await ThreadsTableTestHelper.addUser({ username: 'dicoding' });
-      const requestPayload = {
-        username: 'dicoding',
-        fullname: 'Dicoding Indonesia',
-        password: 'super_secret',
-      };
-      const server = await createServer(container);
-
-      // Action
-      const response = await server.inject({
-        method: 'POST',
-        url: '/users',
-        payload: requestPayload,
-      });
-
-      // Assert
-      const responseJson = JSON.parse(response.payload);
-      expect(response.statusCode).toEqual(400);
-      expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).toEqual('username tidak tersedia');
+      expect(response.statusCode).toEqual(200);
+      expect(thread).toHaveLength(1);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data).toHaveProperty('thread');
+      expect(responseJson.data.thread).toBeDefined();
     });
   });
 });
