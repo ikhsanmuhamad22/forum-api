@@ -229,6 +229,7 @@ describe('/threads endpoint', () => {
 
       // Assert
       const responseJson = JSON.parse(response.payload);
+      console.log(response);
       expect(response.statusCode).toEqual(200);
       expect(thread).toHaveLength(1);
       expect(responseJson.status).toEqual('success');

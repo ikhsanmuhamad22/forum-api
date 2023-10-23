@@ -15,20 +15,23 @@ class GetThreadAndHisCommentUseCase {
   }
 
   _undisplayDeleteComment(getComments) {
-    function updateDeletedContent(comment) {
+    const updatedComments = getComments.map((comment) => {
       if (comment.isDelete) {
-        comment.content = '**komentar telah dihapus**';
+        return {
+          id: comment.id,
+          username: comment.username,
+          date: comment.date,
+          content: '**komentar telah dihapus**',
+        };
       }
-    }
-
-    getComments.forEach(updateDeletedContent);
-    const filteredComments = getComments.map((comment) => ({
-      id: comment.id,
-      username: comment.username,
-      date: comment.date,
-      content: comment.content,
-    }));
-    return filteredComments;
+      return {
+        id: comment.id,
+        username: comment.username,
+        date: comment.date,
+        content: comment.content,
+      };
+    });
+    return updatedComments;
   }
 }
 

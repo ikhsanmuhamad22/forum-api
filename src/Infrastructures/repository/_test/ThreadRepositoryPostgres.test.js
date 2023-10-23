@@ -83,14 +83,6 @@ describe('ThreadsRepositoryPostgres', () => {
       const threadId = 'thread-1234';
       const credentialId = 'user-123';
       await ThreadsTableTestHelper.addThread(threadId, credentialId);
-
-      // add comment for some reason
-      const newComment = new NewComment(
-        { content: 'selamat pagi' },
-        { threadId: 'thread-1234' },
-      );
-      await CommentsTableTestHelper.addComment(newComment, credentialId);
-
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
 
       // Action
@@ -103,14 +95,6 @@ describe('ThreadsRepositoryPostgres', () => {
         body: 'apa kabar',
         date: '2023',
         username: 'dicoding',
-        comments: [
-          {
-            id: 'comment-1234',
-            username: 'dicoding',
-            date: '2023',
-            content: 'selamat pagi',
-          },
-        ],
       });
     });
   });
