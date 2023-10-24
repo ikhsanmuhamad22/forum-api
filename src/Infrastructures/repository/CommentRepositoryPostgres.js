@@ -25,14 +25,6 @@ class CommentRepositoryPostgres extends CommentRepository {
     return new AddedComment({ ...result.rows[0] });
   }
 
-  async deleteCommentById(id) {
-    const query = {
-      text: 'UPDATE comments SET  "isDelete" = $1 WHERE id = $2',
-      values: [true, id],
-    };
-    await this._pool.query(query);
-  }
-
   async getCommentByThreadId(threadId) {
     const query = {
       text: 'SELECT comments.id, users.username, comments.date, comments.content, comments."isDelete" FROM comments  INNER JOIN users ON users.id = comments.owner INNER JOIN threads ON comments."threadId" = threads.id WHERE threads.id = $1',
@@ -66,6 +58,14 @@ class CommentRepositoryPostgres extends CommentRepository {
     if (!result.rowCount) {
       throw new NotFoundError('comment tidak ditemukan');
     }
+  }
+
+  async deleteCommentById(id) {
+    const query = {
+      text: 'UPDATE comments SET  "isDelete" = $1 WHERE id = $2',
+      values: [true, id],
+    };
+    await this._pool.query(query);
   }
 }
 
