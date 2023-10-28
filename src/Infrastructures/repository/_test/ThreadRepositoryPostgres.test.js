@@ -3,7 +3,6 @@ const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const NewComment = require('../../../Domains/comments/entities/NewComment');
-const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
 const pool = require('../../database/postgres/pool');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
@@ -41,11 +40,11 @@ describe('ThreadsRepositoryPostgres', () => {
 
         // Assert
         expect(thread).toHaveLength(1);
-        expect(newAddedThread).toStrictEqual(new AddedThread({
+        expect(newAddedThread).toEqual({
           id: 'thread-1234',
           title: 'ini title',
           owner: 'user-123',
-        }));
+        });
       });
     });
   });
@@ -90,7 +89,7 @@ describe('ThreadsRepositoryPostgres', () => {
       const thread = await threadRepositoryPostgres.getThreadById(threadId);
 
       // Assert
-      expect(thread).toStrictEqual({
+      expect(thread).toEqual({
         id: 'thread-1234',
         title: 'selamat siang',
         body: 'apa kabar',
