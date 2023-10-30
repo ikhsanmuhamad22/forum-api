@@ -8,7 +8,6 @@ class LikeRepositoryPostgres extends LikeRepository {
   }
 
   async addLike(newLike, userId) {
-    console.log('==> addlike');
     const { commentId } = newLike;
     const id = `like-${this._idGenerator()}`;
     const createdAt = new Date();
@@ -22,7 +21,6 @@ class LikeRepositoryPostgres extends LikeRepository {
   }
 
   async deleteLike(commentId, userId) {
-    console.log('==> deleteLike', userId);
     const query = {
       text: 'DELETE FROM likes WHERE "commentId" = $1 and "userId" = $2',
       values: [commentId, userId],
