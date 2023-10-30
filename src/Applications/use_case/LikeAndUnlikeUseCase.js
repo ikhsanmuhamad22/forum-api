@@ -12,7 +12,9 @@ class LikeAndUnlikeUseCase {
     this._verifyCredentialId(credentialId);
     await this._threadRepository.verifyAvailableThread(useCaseParams.threadId);
     await this._commentRepository.verifyAvailableComment(useCaseParams.commentId);
-    this.likeRepository.addLike(newlike, credentialId);
+    const result = this._likeRepository
+      .getLIkeByCommentIdAndUserId(useCaseParams.commentId, credentialId);
+    this._LikeAndUnlikeHandler(result, newlike, useCaseParams, credentialId);
   }
 
   _verifyCredentialId(credentialId) {
@@ -23,6 +25,13 @@ class LikeAndUnlikeUseCase {
     if (typeof credentialId !== 'string') {
       throw new Error('LIKE_USE_CASE.CREDENTIAL_ID_NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
+  }
+
+  async _LikeAndUnlikeHandler(result, newLike, useCaseParams, credentialId) {
+    if (await result === 'like') {
+      return this._likeRepository.addLike(newLike, credentialId);
+    }
+    return this._likeRepository.deleteLike(useCaseParams.commentId, credentialId);
   }
 }
 

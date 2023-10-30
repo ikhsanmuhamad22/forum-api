@@ -24,10 +24,10 @@ exports.up = (pgm) => {
       onDelete: 'CASCADE',
     },
   });
-  pgm.createConstraint('comments', 'fk_likes.threadId_threads.id', {
+  pgm.createConstraint('likes', 'fk_likes.commentId_comments.id', {
     foreignKeys: {
-      columns: 'threadId',
-      references: 'threads(id)',
+      columns: 'commentId',
+      references: 'comments(id)',
       onDelete: 'CASCADE',
     },
   });
