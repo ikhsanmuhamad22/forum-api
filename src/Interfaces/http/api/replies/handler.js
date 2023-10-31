@@ -10,10 +10,14 @@ class ReplyHandler {
   async postReplyHandler(request, h) {
     const { id: credentialId } = request.auth.credentials;
     const likeAndUnlikeUseCase = this._container.getInstance(AddReplyUseCase.name);
-    await likeAndUnlikeUseCase.execute(request.payload, request.params, credentialId);
+    const addedReply = await likeAndUnlikeUseCase
+      .execute(request.payload, request.params, credentialId);
 
     const response = h.response({
       status: 'success',
+      data: {
+        addedReply,
+      },
     });
     response.code(201);
     return response;

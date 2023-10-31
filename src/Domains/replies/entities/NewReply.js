@@ -6,7 +6,7 @@ class NewReply {
     const { commentId } = params;
 
     this.content = content;
-    this.threadId = commentId;
+    this.commentId = commentId;
   }
 
   _verifyPayload({ content }, { commentId }) {

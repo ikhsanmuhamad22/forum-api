@@ -11,7 +11,7 @@ class AddReplyUseCase {
     this._verifyCredentialId(credentialId);
     await this._threadRepository.verifyAvailableThread(useCaseParams.threadId);
     await this._commentRepository.verifyAvailableComment(useCaseParams.commentId);
-    const newReply = NewReply(useCasePayload, useCaseParams);
+    const newReply = new NewReply(useCasePayload, useCaseParams);
     return this._replyRepository.addReply(newReply, credentialId);
   }
 
