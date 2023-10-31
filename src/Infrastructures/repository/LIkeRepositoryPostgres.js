@@ -42,6 +42,17 @@ class LikeRepositoryPostgres extends LikeRepository {
     }
     return 'unlike';
   }
+
+  async getLikeCount(commentId) {
+    const query = {
+      text: 'SELECT * FROM likes WHERE "commentId" = $1',
+      values: [commentId],
+    };
+
+    const result = await this._pool.query(query);
+    console.log(result.rowCount);
+    return result.rowCount;
+  }
 }
 
 module.exports = LikeRepositoryPostgres;

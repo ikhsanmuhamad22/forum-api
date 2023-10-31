@@ -1,9 +1,12 @@
 /* eslint-disable no-param-reassign */
 class GetThreadAndHisCommentUseCase {
-  constructor({ threadRepository, commentRepository, replyRepository }) {
+  constructor({
+    threadRepository, commentRepository, replyRepository, likeRepository,
+  }) {
     this._threadRepository = threadRepository;
     this._commentRepository = commentRepository;
     this._replyRepository = replyRepository;
+    this._likeRepository = likeRepository;
   }
 
   async execute(threadId) {
@@ -17,6 +20,7 @@ class GetThreadAndHisCommentUseCase {
 
   async _undisplayDeleteComment(getComments) {
     const updatedComments = await Promise.all(getComments.map(async (comment) => {
+      const likeCount = await this._likeRepository.getLikeCount(comment.id);
       const getReplies = await this._replyRepository.getReplyByCommentId(comment.id);
       const replies = this._undisplayDeleteReplies(getReplies);
       if (comment.isDelete) {
@@ -32,6 +36,7 @@ class GetThreadAndHisCommentUseCase {
         username: comment.username,
         date: comment.date,
         content: comment.content,
+        likeCount,
         replies,
       };
     }));
