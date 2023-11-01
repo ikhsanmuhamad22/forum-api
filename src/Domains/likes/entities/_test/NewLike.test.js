@@ -1,6 +1,6 @@
-const NewLIke = require('../NewLike');
+const NewLike = require('../NewLike');
 
-describe('a NewLIke entities', () => {
+describe('a NewLike entities', () => {
   it('should throw error when payload did not contain needed property', () => {
     // Arrange
     const params = {
@@ -8,7 +8,7 @@ describe('a NewLIke entities', () => {
     };
 
     // Action and Assert
-    expect(() => new NewLIke(params)).toThrowError('NEW_LIKE.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new NewLike(params)).toThrowError('NEW_LIKE.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error when payload did not meet data type specification', () => {
@@ -19,7 +19,7 @@ describe('a NewLIke entities', () => {
     };
 
     // Action and Assert
-    expect(() => new NewLIke(params)).toThrowError('NEW_LIKE.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new NewLike(params)).toThrowError('NEW_LIKE.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should create NewComment object correctly', () => {
@@ -30,7 +30,7 @@ describe('a NewLIke entities', () => {
     };
 
     // Action
-    const { threadId, commentId } = new NewLIke(params);
+    const { threadId, commentId } = new NewLike(params);
 
     // Assert
     expect(threadId).toEqual(params.threadId);

@@ -1,4 +1,4 @@
-const LikeRepository = require('../LIkeRepository');
+const LikeRepository = require('../LikeRepository');
 
 describe('ThreadRepository interface', () => {
   it('should throw error when invoke abstract behavior', async () => {
