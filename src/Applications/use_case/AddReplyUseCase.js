@@ -1,9 +1,9 @@
 const NewReply = require('../../Domains/replies/entities/NewReply');
 
 class AddReplyUseCase {
-  constructor({ commentRepository, threadRepository, replyRepository }) {
-    this._commentRepository = commentRepository;
+  constructor({ threadRepository, commentRepository, replyRepository }) {
     this._threadRepository = threadRepository;
+    this._commentRepository = commentRepository;
     this._replyRepository = replyRepository;
   }
 
@@ -17,11 +17,11 @@ class AddReplyUseCase {
 
   _verifyCredentialId(credentialId) {
     if (!credentialId) {
-      throw new Error('NEW_THREAD_USE_CASE.NOT_CONTAIN_CREDENTIAL_ID');
+      throw new Error('ADD_REPLY_USE_CASE.NOT_CONTAIN_CREDENTIAL_ID');
     }
 
     if (typeof credentialId !== 'string') {
-      throw new Error('NEW_THREAD_USE_CASE.CREDENTIAL_ID_NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('ADD_REPLY_USE_CASE.CREDENTIAL_ID_NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 }

@@ -11,6 +11,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
   }
 
   async addReply(newReply, owner) {
+    console.log('===> masukkk');
     const { content, commentId } = newReply;
     const id = `reply-${this._idGenerator()}`;
     const createdAt = new Date();
