@@ -8,12 +8,12 @@ class LikeAndUnlikeUseCase {
   }
 
   async execute(useCaseParams, credentialId) {
-    const newlike = new NewLIke(useCaseParams);
     this._verifyCredentialId(credentialId);
+    const newlike = new NewLIke(useCaseParams);
     await this._threadRepository.verifyAvailableThread(useCaseParams.threadId);
     await this._commentRepository.verifyAvailableComment(useCaseParams.commentId);
     const result = this._likeRepository
-      .getLIkeByCommentIdAndUserId(useCaseParams.commentId, credentialId);
+      .getLikeByCommentIdAndUserId(useCaseParams.commentId, credentialId);
     this._LikeAndUnlikeHandler(result, newlike, useCaseParams, credentialId);
   }
 

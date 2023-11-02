@@ -29,7 +29,7 @@ class LikeRepositoryPostgres extends LikeRepository {
     return result.rows[0];
   }
 
-  async getLIkeByCommentIdAndUserId(commentId, userId) {
+  async getLikeByCommentIdAndUserId(commentId, userId) {
     const query = {
       text: 'SELECT * FROM likes WHERE "commentId" = $1 and "userId" = $2',
       values: [commentId, userId],

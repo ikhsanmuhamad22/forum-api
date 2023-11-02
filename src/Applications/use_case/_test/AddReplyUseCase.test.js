@@ -40,7 +40,12 @@ describe('AddReplyUseCase', () => {
 
     const credentialId = 'user-123';
 
-    const mockNewReply = new NewReply(useCasePayload, useCaseParams);
+    const mockNewReply = new NewReply({
+      content: useCasePayload.content,
+    }, {
+      threadId: useCaseParams.threadId,
+      commentId: useCaseParams.commentId,
+    });
 
     /** creating dependency of use case */
     const mockCommentRepository = new CommentRepository();
@@ -52,7 +57,7 @@ describe('AddReplyUseCase', () => {
       .mockImplementation(() => Promise.resolve());
     mockCommentRepository.verifyAvailableComment = jest.fn()
       .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.addReply = jest.fn()
+    mockReplyRepository.addReply = jest.fn()
       .mockImplementation(() => Promise.resolve(mockNewReply));
 
     /** creating use case instance */
@@ -65,8 +70,6 @@ describe('AddReplyUseCase', () => {
     // Action
     const addedReply = await addReplyUseCase
       .execute(useCasePayload, useCaseParams, credentialId);
-
-    console.log(addedReply);
 
     // Assert
     expect(addedReply).toStrictEqual(new NewReply({

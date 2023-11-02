@@ -1,4 +1,4 @@
-class NewLIke {
+class NewLike {
   constructor(params) {
     this._verifyPayload(params);
 
@@ -19,4 +19,4 @@ class NewLIke {
   }
 }
 
-module.exports = NewLIke;
+module.exports = NewLike;

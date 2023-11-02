@@ -5,7 +5,6 @@ class DeleteReplyUseCase {
 
   async execute(id, credentialId) {
     this._verifyCredentialId(credentialId);
-    console.log(id);
     await this._replyRepository.verifyAvailableReply(id);
     await this._replyRepository.verifyReplyOwner(id, credentialId);
     return this._replyRepository.deleteReplyById(id);

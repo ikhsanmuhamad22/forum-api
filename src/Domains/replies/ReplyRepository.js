@@ -1,6 +1,5 @@
 class ReplyRepository {
   async addReply(newReply, credentialId) {
-    console.log(newReply, credentialId);
     throw new Error('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
@@ -18,10 +17,3 @@ class ReplyRepository {
 }
 
 module.exports = ReplyRepository;
-
-// NewReply {
-//   content: 'sebuah balasan',
-//   commentId: 'comment-snKOILnGjC4kWslVPG-0u'
-// } user-l4HGefnmqc8VhGIsvkr02
-
-// NewReply { content: 'hello pagi semua', commentId: 'comment-123' } user-123
