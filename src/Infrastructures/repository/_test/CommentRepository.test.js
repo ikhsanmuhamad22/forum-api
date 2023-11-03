@@ -9,20 +9,21 @@ const NewComment = require('../../../Domains/comments/entities/NewComment');
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
 
 describe('CommentRepositoryPostgres', () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     // add User owner Thread
     await UsersTableTestHelper.addUser({ username: 'dicoding' });
 
     // addThread
-    const threadId = 'thread-1234';
-    const credentialId = 'user-123';
-    await ThreadsTableTestHelper.addThread(threadId, credentialId);
+    await ThreadsTableTestHelper.addThread('thread-1234', 'user-123');
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
+  });
+
+  afterAll(async () => {
     await pool.end();
   });
 
@@ -62,6 +63,12 @@ describe('CommentRepositoryPostgres', () => {
 
     it('should not throw NotFoundError when commentId available', async () => {
       // Arrange
+
+      // add comment
+      const newComment = { content: 'hi', threadId: 'thread-1234' };
+      const credentialId = 'user-123';
+      await CommentsTableTestHelper.addComment(newComment, credentialId);
+
       const commentId = 'comment-1234';
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
@@ -74,19 +81,29 @@ describe('CommentRepositoryPostgres', () => {
   describe('verifyCommentOwner function', () => {
     it('should throw AuthorizationError when not Comment owner', async () => {
       // Arrange
+
+      // addComment
+      const newComment = { content: 'hi', threadId: 'thread-1234' };
+      const credentialId = 'user-123';
+      await CommentsTableTestHelper.addComment(newComment, credentialId);
+
       const commentId = 'comment-1234';
-      const credentialId = 'not_user_owner';
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
       // Action & assert
-      await expect(commentRepositoryPostgres.verifyCommentOwner(commentId, credentialId))
+      await expect(commentRepositoryPostgres.verifyCommentOwner(commentId, 'not_comment_owner'))
         .rejects.toThrow(AuthorizationError);
     });
 
     it('should not throw AuthorizationError when it is Comment owner', async () => {
       // Arrange
-      const commentId = 'comment-1234';
+
+      // addComment
+      const newComment = { content: 'hi', threadId: 'thread-1234' };
       const credentialId = 'user-123';
+      await CommentsTableTestHelper.addComment(newComment, credentialId);
+
+      const commentId = 'comment-1234';
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
       // Action & assert
@@ -94,9 +111,16 @@ describe('CommentRepositoryPostgres', () => {
         .resolves.not.toThrow(AuthorizationError);
     });
   });
+
   describe('deleteCommentById function', () => {
     it('should persist deleteCommentById', async () => {
       // Arrange
+
+      // addComment
+      const newComment = { content: 'hi', threadId: 'thread-1234' };
+      const credentialId = 'user-123';
+      await CommentsTableTestHelper.addComment(newComment, credentialId);
+
       const commentId = 'comment-1234';
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
@@ -106,6 +130,34 @@ describe('CommentRepositoryPostgres', () => {
 
       // Assert
       expect(comment[0].isDelete).toEqual(true);
+    });
+  });
+
+  describe('getCommentByThreadId function', () => {
+    it('should persist getReplyByCommentId', async () => {
+      // Arrange
+
+      // addComment
+      const newComment = { content: 'hi', threadId: 'thread-1234' };
+      const credentialId = 'user-123';
+      await CommentsTableTestHelper.addComment(newComment, credentialId);
+
+      const commentId = 'comment-1234';
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+
+      // Action
+      const comment = await commentRepositoryPostgres.getCommentByThreadId('thread-1234');
+
+      // Assert
+      expect(comment).toStrictEqual([
+        {
+          id: 'comment-1234',
+          username: 'dicoding',
+          date: '2023',
+          content: 'hi',
+          isDelete: false,
+        },
+      ]);
     });
   });
 });

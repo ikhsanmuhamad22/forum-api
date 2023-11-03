@@ -21,7 +21,7 @@ const CommentsTableTestHelper = {
     const { content, threadId } = newComment;
     const id = 'comment-1234';
     const date = '2023';
-    const isDelete = true;
+    const isDelete = false;
 
     const query = {
       text: 'INSERT INTO comments VALUES($1, $2, $3, $4, $5, $6)',

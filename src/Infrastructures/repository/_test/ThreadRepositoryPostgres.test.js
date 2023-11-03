@@ -1,8 +1,6 @@
-const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
-const NewComment = require('../../../Domains/comments/entities/NewComment');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
 const pool = require('../../database/postgres/pool');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
@@ -21,30 +19,28 @@ describe('ThreadsRepositoryPostgres', () => {
   afterAll(async () => {
     await pool.end();
   });
-  describe('ThreadRepository', () => {
-    describe('addThread function', () => {
-      it('should persist add new thread and return value correctly', async () => {
-        // Arrange
-        const newThread = new NewThread({
-          title: 'ini title',
-          body: 'ini body',
-        });
-        const threadId = 'thread-1234';
-        const credentialId = 'user-123';
-        const fakeIdGenerator = () => '1234';
-        const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
+  describe('addThread function', () => {
+    it('should persist add new thread and return value correctly', async () => {
+      // Arrange
+      const newThread = new NewThread({
+        title: 'ini title',
+        body: 'ini body',
+      });
+      const threadId = 'thread-1234';
+      const credentialId = 'user-123';
+      const fakeIdGenerator = () => '1234';
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
 
-        // Action
-        const newAddedThread = await threadRepositoryPostgres.addThread(newThread, credentialId);
-        const thread = await ThreadsTableTestHelper.findThreadById(threadId);
+      // Action
+      const newAddedThread = await threadRepositoryPostgres.addThread(newThread, credentialId);
+      const thread = await ThreadsTableTestHelper.findThreadById(threadId);
 
-        // Assert
-        expect(thread).toHaveLength(1);
-        expect(newAddedThread).toEqual({
-          id: 'thread-1234',
-          title: 'ini title',
-          owner: 'user-123',
-        });
+      // Assert
+      expect(thread).toHaveLength(1);
+      expect(newAddedThread).toEqual({
+        id: 'thread-1234',
+        title: 'ini title',
+        owner: 'user-123',
       });
     });
   });
@@ -89,7 +85,7 @@ describe('ThreadsRepositoryPostgres', () => {
       const thread = await threadRepositoryPostgres.getThreadById(threadId);
 
       // Assert
-      expect(thread).toEqual({
+      expect(thread).toStrictEqual({
         id: 'thread-1234',
         title: 'selamat siang',
         body: 'apa kabar',
