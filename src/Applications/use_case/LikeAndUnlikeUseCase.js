@@ -1,4 +1,4 @@
-const NewLIke = require('../../Domains/likes/entities/NewLike');
+const NewLike = require('../../Domains/likes/entities/NewLike');
 
 class LikeAndUnlikeUseCase {
   constructor({ likeRepository, threadRepository, commentRepository }) {
@@ -9,7 +9,7 @@ class LikeAndUnlikeUseCase {
 
   async execute(useCaseParams, credentialId) {
     this._verifyCredentialId(credentialId);
-    const newlike = new NewLIke(useCaseParams);
+    const newlike = new NewLike(useCaseParams);
     await this._threadRepository.verifyAvailableThread(useCaseParams.threadId);
     await this._commentRepository.verifyAvailableComment(useCaseParams.commentId);
     const result = this._likeRepository

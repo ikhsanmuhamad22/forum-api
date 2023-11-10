@@ -7,7 +7,7 @@ class LikeRepository {
     throw new Error('LIKE_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async getLIkeByCommentIdAndUserId(commentId, credentialId) {
+  async getLikeByCommentIdAndUserId(commentId, credentialId) {
     throw new Error('LIKE_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 

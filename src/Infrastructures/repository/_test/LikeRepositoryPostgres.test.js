@@ -5,8 +5,8 @@ const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const RepliesTableTestHandler = require('../../../../tests/RepliesTableTestHelper');
 const NewLike = require('../../../Domains/likes/entities/NewLike');
-const LikeRepositoryPostgres = require('../LIkeRepositoryPostgres');
-const LikeTableTestHelper = require('../../../../tests/LIkesTableTestHelper');
+const LikeRepositoryPostgres = require('../LikeRepositoryPostgres');
+const LikeTableTestHelper = require('../../../../tests/LikesTableTestHelper');
 
 describe('ReplyRepositoryPostgres', () => {
   beforeEach(async () => {

@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 /* istanbul ignore file */
 
 const { createContainer } = require('instances-container');
@@ -33,12 +32,12 @@ const AddCommentUseCase = require('../Applications/use_case/AddCommentUseCase');
 const DeleteCommentUseCase = require('../Applications/use_case/DeleteCommentUseCase');
 const GetThreadAndHisCommentUseCase = require('../Applications/use_case/GetThreadAndHisCommentUseCase');
 const LikeAndUnlikeUseCase = require('../Applications/use_case/LikeAndUnlikeUseCase');
-const LikeRepository = require('../Domains/likes/LIkeRepository');
-const LikeRepositoryPostgres = require('./repository/LIkeRepositoryPostgres');
+const LikeRepository = require('../Domains/likes/LikeRepository');
 const ReplyRepository = require('../Domains/replies/ReplyRepository');
 const ReplyRepositoryPostgres = require('./repository/ReplyRepositoryPostgres');
 const AddReplyUseCase = require('../Applications/use_case/AddReplyUseCase');
 const DeleteReplyUseCase = require('../Applications/use_case/DeleteReplyUseCase');
+const LikeRepositoryPostgres = require('./repository/LikeRepositoryPostgres');
 
 // creating container
 const container = createContainer();
