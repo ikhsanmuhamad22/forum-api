@@ -1,6 +1,4 @@
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
-const LikeTableTestHelper = require('../../../../tests/LIkesTableTestHelper');
-const RepliesTableTestHandler = require('../../../../tests/RepliesTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const container = require('../../container');
