@@ -1,4 +1,4 @@
-const LikeRepository = require('../../Domains/likes/LikeRepository');
+import LikeRepository from '../../Domains/likes/LikeRepository';
 
 class LikeRepositoryPostgres extends LikeRepository {
   constructor(pool, idGenerator) {
@@ -54,4 +54,4 @@ class LikeRepositoryPostgres extends LikeRepository {
   }
 }
 
-module.exports = LikeRepositoryPostgres;
+export default LikeRepositoryPostgres;

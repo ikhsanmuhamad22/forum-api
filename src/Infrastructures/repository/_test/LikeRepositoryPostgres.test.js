@@ -9,7 +9,7 @@ const LikeTableTestHelper = require('../../../../tests/LikesTableTestHelper');
 
 describe('ReplyRepositoryPostgres', () => {
   beforeEach(async () => {
-    // add User owner Thread
+    // add User owner Threa
     await UsersTableTestHelper.addUser({ username: 'dicoding' });
 
     // addThread
