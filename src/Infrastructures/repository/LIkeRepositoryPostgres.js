@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 const LikeRepository = require('../../Domains/likes/LikeRepository');
 
 class LikeRepositoryPostgres extends LikeRepository {

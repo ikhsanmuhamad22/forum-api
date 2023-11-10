@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const LikeRepository = require('../../../Domains/likes/LikeRepository');
 const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
