@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 const LikeRepository = require('../LikeRepository');
 
 describe('ThreadRepository interface', () => {
