@@ -11,7 +11,7 @@ describe('AddCommentUseCase', () => {
     const addCommentUseCase = new AddCommentUseCase({});
 
     // Action & Assert
-    await expect(addCommentUseCase.execute(newComment, paramsComment)).rejects.toThrowError('NEW_THREAD_USE_CASE.NOT_CONTAIN_CREDENTIAL_ID');
+    await expect(addCommentUseCase.execute(newComment, paramsComment)).rejects.toThrowError('NEW_COMMENT_USE_CASE.NOT_CONTAIN_CREDENTIAL_ID');
   });
 
   it('should throw error if credentialId not string', async () => {
@@ -22,7 +22,7 @@ describe('AddCommentUseCase', () => {
     const addThreadUseCase = new AddCommentUseCase({});
 
     // Action & Assert
-    await expect(addThreadUseCase.execute(newComment, paramsComment, credentialId)).rejects.toThrowError('NEW_THREAD_USE_CASE.CREDENTIAL_ID_NOT_MEET_DATA_TYPE_SPECIFICATION');
+    await expect(addThreadUseCase.execute(newComment, paramsComment, credentialId)).rejects.toThrowError('NEW_COMMENT_USE_CASE.CREDENTIAL_ID_NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
   /**
    * Menguji apakah use case mampu mengoskestrasikan langkah demi langkah dengan benar.
