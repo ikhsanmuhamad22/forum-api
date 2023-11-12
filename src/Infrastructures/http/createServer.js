@@ -11,7 +11,7 @@ const replies = require('../../Interfaces/http/api/replies');
 
 const createServer = async (container) => {
   const server = Hapi.server({
-    host: process.env.NODE_ENV !== 'production' ? 'localhost' : '0.0.0.0',
+    host: process.env.HOST,
     port: process.env.PORT,
   });
 
@@ -63,14 +63,6 @@ const createServer = async (container) => {
       options: { container },
     },
   ]);
-
-  server.route({
-    method: 'GET',
-    path: '/',
-    handler: () => ({
-      value: 'Hello world!',
-    }),
-  });
 
   server.ext('onPreResponse', (request, h) => {
     // mendapatkan konteks response dari request
